@@ -38,8 +38,28 @@ router.get('/:id', async (req, res) => {
 })
 
 router.post('/', (req, res) => {
-
+    const { title, contents } = req.body
+        if (!title || !contents) {
+            res.status(400).json({
+                message: "Please provide title and contents for the post"
+            })
+        } else {
+            Post.insert({ title, contents })
+            .then(({id}) => {
+                return Post.findById(id)
+            })
+            .then(newPost => {
+                res.status(201).json(newPost)
+            })
+            .catch(err => {
+                res.status(500).json({
+                    message: "There was an error while saving the post to the database",
+                    err: err
+                })
+            })
+        }
 })
+
 router.delete('/:id', (req, res) => {
 
 })
